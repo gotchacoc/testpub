@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sonarqubej
+  namespace: argocd
+spec:
+  destination:
+    namespace: sonarqube
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: sonarqube
+    helm:
+      values: |-
+        resources:
+          limits:
+            cpu: 800m
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        ingress:
+          enabled: true
+          hosts:
+            - name: sonarqube-preprod.sorec.ma
+              path: /
+    repoURL: https://SonarSource.github.io/helm-chart-sonarqube
+    targetRevision: 6.0.0+403
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
